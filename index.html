@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Courier FAQ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#f6f8fa;--surface:#fff;--surface2:#f0f4f8;
+  --border:#d0d7de;--border2:#e8ecf0;
+  --text:#1a1f2e;--muted:#636e7b;--muted2:#8b949e;
+  --accent:#0969da;--accent-bg:#ddf4ff;
+  --orange:#bc4c00;--orange-bg:#fff1e5;
+  --red:#cf222e;--red-bg:#ffebe9;
+  --purple:#6639ba;--purple-bg:#fbefff;
+  --green:#1a7f37;--green-bg:#dafbe1;
+  --font:'Inter',sans-serif;
+  --radius:8px;--radius-lg:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:15px;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;}
+
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;position:sticky;top:0;z-index:100;}
+.header-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.brand-name{font-size:16px;font-weight:700;}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.lang-switcher{display:flex;gap:3px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px;}
+.lang-btn{padding:4px 10px;font-size:12px;font-weight:500;font-family:var(--font);border:none;background:none;cursor:pointer;border-radius:4px;color:var(--muted);transition:all .15s;}
+.lang-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12);}
+
+.search-wrap{max-width:720px;margin:1.25rem auto .75rem;padding:0 1.25rem;}
+.search-box{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.65rem 1rem;transition:border-color .15s;}
+.search-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(9,105,218,.1);}
+.search-input{flex:1;border:none;outline:none;font-size:14px;font-family:var(--font);background:none;color:var(--text);}
+.search-input::placeholder{color:var(--muted2);}
+.search-clear{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0;display:none;}
+
+.main{max-width:720px;margin:0 auto;padding:0 1.25rem 4rem;}
+
+.cat-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.cat-tab{padding:.4rem .85rem;font-size:12px;font-weight:500;font-family:var(--font);border:1px solid var(--border);border-radius:20px;background:var(--surface);cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap;}
+.cat-tab:hover{border-color:var(--accent);color:var(--accent);}
+.cat-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.faq-section{margin-bottom:1.5rem;}
+.section-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.65rem;}
+.section-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.section-title{font-size:14px;font-weight:600;}
+.section-count{font-size:11px;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);padding:1px 7px;border-radius:10px;}
+
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px;overflow:hidden;transition:box-shadow .15s;}
+.faq-item:hover{box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;cursor:pointer;gap:1rem;user-select:none;-webkit-tap-highlight-color:transparent;}
+.faq-q-text{font-size:14px;font-weight:500;line-height:1.4;flex:1;}
+.faq-q-text mark{background:rgba(9,105,218,.12);color:var(--accent);border-radius:2px;padding:0 2px;}
+.faq-chevron{color:var(--muted);font-size:11px;transition:transform .2s;flex-shrink:0;}
+.faq-item.open .faq-chevron{transform:rotate(180deg);}
+.faq-a{display:none;padding:0 1rem .9rem;border-top:1px solid var(--border2);}
+.faq-item.open .faq-a{display:block;}
+.faq-a-inner{padding-top:.75rem;font-size:13px;color:var(--muted);line-height:1.8;white-space:pre-line;}
+
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted);}
+.empty-icon{font-size:40px;display:block;margin-bottom:.75rem;}
+.empty-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:.4rem;}
+
+.suggest-wrap{margin-top:2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;text-align:center;}
+.suggest-title{font-size:14px;font-weight:600;margin-bottom:.35rem;}
+.suggest-sub{font-size:12px;color:var(--muted);margin-bottom:1rem;}
+.suggest-btn{background:var(--accent);color:#fff;font-family:var(--font);font-size:13px;font-weight:600;padding:.6rem 1.5rem;border:none;border-radius:6px;cursor:pointer;}
+.suggest-btn:hover{opacity:.88;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:flex-end;justify-content:center;}
+.modal-overlay.hidden{display:none;}
+.modal{background:var(--surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:1.5rem 1.25rem 2rem;width:100%;max-width:540px;}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:.35rem;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:1.25rem;}
+.form-label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em;}
+.form-input,.form-textarea,.form-select{width:100%;border:1px solid var(--border);border-radius:6px;padding:.55rem .75rem;font-size:14px;font-family:var(--font);outline:none;margin-bottom:.85rem;background:var(--surface);color:var(--text);-webkit-appearance:none;}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(9,105,218,.1);}
+.form-textarea{min-height:90px;resize:vertical;}
+.form-row{display:flex;gap:.65rem;}
+.form-row>*{flex:1;}
+.modal-actions{display:flex;gap:.65rem;margin-top:.25rem;}
+.btn-cancel{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:13px;font-weight:500;padding:.65rem;border-radius:6px;cursor:pointer;}
+.btn-submit{flex:2;background:var(--accent);color:#fff;border:none;font-family:var(--font);font-size:13px;font-weight:600;padding:.65rem;border-radius:6px;cursor:pointer;}
+.btn-submit:disabled{opacity:.5;}
+.success-msg{text-align:center;padding:1.5rem 0;}
+.success-icon{font-size:44px;display:block;margin-bottom:.75rem;}
+.success-title{font-size:16px;font-weight:700;margin-bottom:.4rem;}
+.success-sub{font-size:13px;color:var(--muted);margin-bottom:1.25rem;}
+.close-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:13px;padding:.6rem 2rem;border-radius:6px;cursor:pointer;}
+
+@media(min-width:600px){
+  .modal-overlay{align-items:center;}
+  .modal{border-radius:var(--radius-lg);max-height:90vh;overflow-y:auto;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">🛵</div>
+      <div>
+        <div class="brand-name">Courier FAQ</div>
+        <div class="brand-sub" id="brandSub">База знаний курьера</div>
+      </div>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('ru',this)">RU</button>
+      <button class="lang-btn" onclick="setLang('pl',this)">PL</button>
+      <button class="lang-btn" onclick="setLang('ua',this)">UA</button>
+      <button class="lang-btn" onclick="setLang('en',this)">EN</button>
+    </div>
+  </div>
+</header>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <span>🔍</span>
+    <input class="search-input" id="searchInput" type="text" placeholder="Поиск..." oninput="onSearch()">
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+  </div>
+</div>
+
+<main class="main">
+  <div class="cat-tabs" id="catTabs"></div>
+  <div id="faqContent"></div>
+  <div class="suggest-wrap">
+    <div class="suggest-title" id="suggestTitle">Не нашли ответ?</div>
+    <div class="suggest-sub" id="suggestSub">Предложите тему — мы добавим её в FAQ</div>
+    <button class="suggest-btn" id="suggestBtn" onclick="openModal()">Предложить тему</button>
+  </div>
+</main>
+
+<div class="modal-overlay hidden" id="modalOverlay" onclick="bgClose(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div id="modalInner"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// FAQ DATA — редактируйте прямо здесь
+// Чтобы добавить вопрос: скопируйте один блок { ... } и заполните
+// Active: false — скрывает вопрос без удаления
+// ══════════════════════════════════════════════════════════════
+const FAQ_DATA = [
+
+  // ════════════════ АВАРИЯ / ACCIDENT ════════════════
+  {
+    id: 1,
+    active: true,
+    cat: { ru:'Авария', pl:'Wypadek', ua:'Аварія', en:'Accident' },
+    q: {
+      ru: 'Попал в аварию на скутере HopCity — что делать?',
+      pl: 'Miałem wypadek na skuterze HopCity — co robić?',
+      ua: 'Потрапив у аварію на скутері HopCity — що робити?',
+      en: 'I had an accident on a HopCity scooter — what to do?'
+    },
+    a: {
+      ru: '1. Остановитесь, убедитесь что вы в безопасности.\n2. Если есть пострадавшие — вызовите скорую: 112.\n3. Сфотографируйте место аварии, повреждения скутера, номера участников.\n4. Позвоните диспетчеру: сообщите геолокацию и номер скутера.\n5. Не перемещайте скутер до приезда поддержки.\n6. Заполните форму в приложении: Меню → Сообщить об инциденте → ДТП.\n7. Если виновник — третье лицо: возьмите его данные (ФИО, телефон, страховка).',
+      pl: '1. Zatrzymaj się i upewnij się, że jesteś bezpieczny.\n2. Jeśli są poszkodowani — zadzwoń pod 112.\n3. Zrób zdjęcia miejsca wypadku, uszkodzeń skutera i tablic rejestracyjnych.\n4. Zadzwoń do dyspozytora podając lokalizację i numer skutera.\n5. Nie przemieszczaj skutera przed przyjazdem wsparcia.\n6. Wypełnij formularz w aplikacji: Menu → Zgłoś incydent → Kolizja.\n7. Jeśli sprawcą jest osoba trzecia — pobierz jej dane.',
+      ua: '1. Зупиніться, переконайтеся що ви в безпеці.\n2. Якщо є постраждалі — викличте швидку: 112.\n3. Сфотографуйте місце аварії, пошкодження скутера, номери учасників.\n4. Зателефонуйте диспетчеру: повідомте геолокацію та номер скутера.\n5. Не переміщуйте скутер до приїзду підтримки.\n6. Заповніть форму у додатку: Меню → Повідомити про інцидент → ДТП.\n7. Якщо винуватець — третя особа: візьміть її дані.',
+      en: '1. Stop and make sure you are safe.\n2. If there are injured — call 112.\n3. Take photos of the accident scene, scooter damage, and license plates.\n4. Call the dispatcher with your location and scooter number.\n5. Do not move the scooter until support arrives.\n6. Fill out the form in the app: Menu → Report Incident → Accident.\n7. If a third party is at fault — collect their details.'
+    }
+  },
+
+  {
+    id: 2,
+    active: true,
+    cat: { ru:'Авария', pl:'Wypadek', ua:'Аварія', en:'Accident' },
+    q: {
+      ru: 'Попал в аварию на своём скутере или велосипеде — что делать?',
+      pl: 'Miałem wypadek na własnym skuterze/rowerze — co robić?',
+      ua: 'Потрапив у аварію на власному скутері/велосипеді — що робити?',
+      en: 'I had an accident on my own scooter or bike — what to do?'
+    },
+    a: {
+      ru: '1. Убедитесь в своей безопасности, при необходимости вызовите 112.\n2. Сообщите диспетчеру — смена будет приостановлена.\n3. Если виноват другой участник: зафиксируйте его данные, вызовите полицию.\n4. Заполните форму в приложении: Меню → Сообщить об инциденте → Личный транспорт.\n5. Сохраните все документы (протокол полиции, справки) — они нужны HR.',
+      pl: '1. Upewnij się, że jesteś bezpieczny, w razie potrzeby zadzwoń pod 112.\n2. Poinformuj dyspozytora — zmiana zostanie wstrzymana.\n3. Jeśli winny jest ktoś inny: zapisz dane i wezwij policję.\n4. Wypełnij formularz: Menu → Zgłoś incydent → Pojazd własny.\n5. Zachowaj wszystkie dokumenty — będą potrzebne HR.',
+      ua: '1. Переконайтеся у своїй безпеці, за необхідності викличте 112.\n2. Повідомте диспетчеру — зміна буде призупинена.\n3. Якщо винен інший учасник: зафіксуйте його дані та викличте поліцію.\n4. Заповніть форму: Меню → Повідомити про інцидент → Особистий транспорт.\n5. Збережіть всі документи — вони знадобляться HR.',
+      en: '1. Ensure your safety, call 112 if needed.\n2. Notify the dispatcher — your shift will be paused.\n3. If someone else is at fault: record their details and call the police.\n4. Fill out the form: Menu → Report Incident → Personal Vehicle.\n5. Keep all documents — HR will need them.'
+    }
+  },
+
+  {
+    id: 3,
+    active: true,
+    cat: { ru:'Авария', pl:'Wypadek', ua:'Аварія', en:'Accident' },
+    q: {
+      ru: 'Кто виноват в аварии — как это определяется?',
+      pl: 'Kto jest winny wypadku — jak to jest ustalane?',
+      ua: 'Хто винен у аварії — як це визначається?',
+      en: 'Who is at fault in an accident — how is it determined?'
+    },
+    a: {
+      ru: 'Вина определяется по протоколу полиции.\n\n• Если виноват курьер — страховка компании покрывает ущерб третьим лицам (только для скутеров HopCity).\n• Если виноват другой участник — его страховка покрывает ваш ущерб. Обязательно возьмите данные его страховки.\n• Личный транспорт курьера страхуется самим курьером.\n\n⚠️ Важно: не признавайте вину на месте без представителя компании.',
+      pl: 'Wina jest ustalana na podstawie protokołu policji.\n\n• Jeśli winny jest kurier — ubezpieczenie firmy pokrywa szkody osób trzecich (tylko skutery HopCity).\n• Jeśli winny jest ktoś inny — jego ubezpieczenie pokrywa Twoje szkody.\n• Pojazd własny kuriera jest ubezpieczany przez kuriera.\n\n⚠️ Ważne: nie przyznawaj się do winy bez przedstawiciela firmy.',
+      ua: 'Вина визначається за протоколом поліції.\n\n• Якщо винен кур\'єр — страховка компанії покриває збитки третім особам (тільки скутери HopCity).\n• Якщо винен інший — його страховка покриває ваші збитки.\n• Особистий транспорт страхується самим кур\'єром.\n\n⚠️ Важливо: не визнавайте провину без представника компанії.',
+      en: 'Fault is determined by the police report.\n\n• If the courier is at fault — company insurance covers third-party damage (HopCity scooters only).\n• If someone else is at fault — their insurance covers your damage.\n• Personal vehicles are insured by the courier.\n\n⚠️ Important: do not admit fault without a company representative.'
+    }
+  },
+
+  // ════════════════ ПОЛОМКА / BREAKDOWN ════════════════
+  {
+    id: 4,
+    active: true,
+    cat: { ru:'Поломка', pl:'Awaria', ua:'Поломка', en:'Breakdown' },
+    q: {
+      ru: 'Скутер HopCity сломался во время смены — что делать?',
+      pl: 'Skuter HopCity zepsuł się podczas zmiany — co robić?',
+      ua: 'Скутер HopCity зламався під час зміни — що робити?',
+      en: 'The HopCity scooter broke down during a shift — what to do?'
+    },
+    a: {
+      ru: '1. Съедьте в безопасное место, не блокируйте движение.\n2. Сообщите диспетчеру через чат в приложении или по телефону.\n3. В приложении: Меню → Сообщить о поломке → выберите тип неисправности.\n4. Сфотографируйте поломку и прикрепите к форме.\n5. Ожидайте механика или инструкции диспетчера.\n6. Не пытайтесь чинить скутер самостоятельно — это запрещено.\n7. Смена не закрывается — время ожидания засчитывается.',
+      pl: '1. Zjedź w bezpieczne miejsce, nie blokuj ruchu.\n2. Poinformuj dyspozytora przez czat w aplikacji lub telefonicznie.\n3. W aplikacji: Menu → Zgłoś awarię → wybierz typ usterki.\n4. Zrób zdjęcia i dołącz do formularza.\n5. Czekaj na mechanika lub instrukcje dyspozytora.\n6. Nie próbuj naprawiać skutera samodzielnie — jest to zabronione.\n7. Zmiana się nie kończy — czas oczekiwania jest wliczany.',
+      ua: '1. З\'їдьте в безпечне місце, не блокуйте рух.\n2. Повідомте диспетчеру через чат у додатку або по телефону.\n3. У додатку: Меню → Повідомити про поломку → оберіть тип несправності.\n4. Сфотографуйте поломку і прикріпіть до форми.\n5. Чекайте механіка або інструкцій диспетчера.\n6. Не намагайтеся лагодити скутер самостійно — це заборонено.\n7. Зміна не закривається — час очікування зараховується.',
+      en: '1. Pull over to a safe location, do not block traffic.\n2. Notify the dispatcher via app chat or by phone.\n3. In the app: Menu → Report Breakdown → select the fault type.\n4. Take photos and attach them to the form.\n5. Wait for a mechanic or dispatcher instructions.\n6. Do not attempt to repair the scooter yourself — this is prohibited.\n7. Your shift stays open — waiting time is counted.'
+    }
+  },
+
+  {
+    id: 5,
+    active: true,
+    cat: { ru:'Поломка', pl:'Awaria', ua:'Поломка', en:'Breakdown' },
+    q: {
+      ru: 'Мой личный скутер сломался — что делать?',
+      pl: 'Mój własny skuter się zepsuł — co robić?',
+      ua: 'Мій особистий скутер зламався — що робити?',
+      en: 'My personal scooter broke down — what to do?'
+    },
+    a: {
+      ru: '1. Сообщите диспетчеру о ситуации.\n2. Смена будет поставлена на паузу.\n3. Если можете добраться до склада — получите замену из пула HopCity (при наличии).\n4. Если нет — смена завершается, оплата за отработанное время сохраняется.\n5. Ремонт личного транспорта — ответственность курьера.',
+      pl: '1. Poinformuj dyspozytora o sytuacji.\n2. Zmiana zostanie wstrzymana.\n3. Jeśli możesz dotrzeć do magazynu — otrzymasz zastępczy skuter HopCity (jeśli dostępny).\n4. Jeśli nie — zmiana kończy się, wypłata za przepracowany czas jest zachowana.\n5. Naprawa pojazdu własnego to odpowiedzialność kuriera.',
+      ua: '1. Повідомте диспетчеру про ситуацію.\n2. Зміна буде поставлена на паузу.\n3. Якщо можете дістатися складу — отримаєте заміну з пулу HopCity (за наявності).\n4. Якщо ні — зміна завершується, оплата за відпрацьований час зберігається.\n5. Ремонт особистого транспорту — відповідальність кур\'єра.',
+      en: '1. Notify the dispatcher of the situation.\n2. Your shift will be paused.\n3. If you can reach the depot — you may get a replacement HopCity scooter (if available).\n4. If not — the shift ends, payment for hours worked is preserved.\n5. Repair of personal transport is the courier\'s responsibility.'
+    }
+  },
+
+  // ════════════════ СКУТЕР / SCOOTER ════════════════
+  {
+    id: 6,
+    active: true,
+    cat: { ru:'Скутер', pl:'Skuter', ua:'Скутер', en:'Scooter' },
+    q: {
+      ru: 'Хочу сдать скутер HopCity — что делать?',
+      pl: 'Chcę oddać skuter HopCity — co robić?',
+      ua: 'Хочу здати скутер HopCity — що робити?',
+      en: 'I want to return the HopCity scooter — what to do?'
+    },
+    a: {
+      ru: '1. Сообщите о намерении сдать скутер не менее чем за 24 часа диспетчеру.\n2. В приложении: Меню → Скутер → Вернуть скутер → выберите дату и время.\n3. Пригоните скутер на указанную точку возврата в чистом виде.\n4. Вместе с механиком проведите осмотр — зафиксируйте состояние.\n5. Подпишите акт приёма-передачи.\n6. Убедитесь что скутер снят с вашего аккаунта в приложении.\n\n⚠️ Все штрафы и повреждения должны быть урегулированы до сдачи.',
+      pl: '1. Poinformuj dyspozytora o zamiarze oddania skutera co najmniej 24 godziny wcześniej.\n2. W aplikacji: Menu → Skuter → Zwróć skuter → wybierz datę i godzinę.\n3. Przywieź skuter czysty do wyznaczonego punktu zwrotu.\n4. Przeprowadź inspekcję razem z mechanikiem.\n5. Podpisz protokół zdawczo-odbiorczy.\n6. Upewnij się, że skuter jest usunięty z Twojego konta.\n\n⚠️ Wszystkie mandaty i uszkodzenia muszą być uregulowane przed zwrotem.',
+      ua: '1. Повідомте диспетчеру про намір здати скутер не менше ніж за 24 години.\n2. У додатку: Меню → Скутер → Повернути скутер → оберіть дату і час.\n3. Пригоніть скутер у чистому вигляді до вказаної точки повернення.\n4. Разом з механіком проведіть огляд.\n5. Підпишіть акт приймання-передачі.\n6. Переконайтеся що скутер знятий з вашого акаунту.\n\n⚠️ Всі штрафи та пошкодження мають бути врегульовані до здачі.',
+      en: '1. Notify the dispatcher of your intent to return the scooter at least 24 hours in advance.\n2. In the app: Menu → Scooter → Return Scooter → select date and time.\n3. Bring the scooter clean to the designated return point.\n4. Conduct an inspection with the mechanic.\n5. Sign the handover document.\n6. Make sure the scooter is removed from your account.\n\n⚠️ All fines and damages must be settled before return.'
+    }
+  },
+
+  // ════════════════ АРЕНДА / RENTAL ════════════════
+  {
+    id: 7,
+    active: true,
+    cat: { ru:'Аренда', pl:'Wynajem', ua:'Оренда', en:'Rental' },
+    q: {
+      ru: 'Хочу арендовать скутер HopCity — как это сделать?',
+      pl: 'Chcę wynająć skuter HopCity — jak to zrobić?',
+      ua: 'Хочу орендувати скутер HopCity — як це зробити?',
+      en: 'I want to rent a HopCity scooter — how to do it?'
+    },
+    a: {
+      ru: '1. Убедитесь что у вас есть действующие права категории A/AM или B (для скутеров до 50cc).\n2. В приложении: Меню → Скутер → Запросить аренду.\n3. Загрузите фото прав и документа удостоверяющего личность.\n4. Дождитесь одобрения (обычно 1–2 рабочих дня).\n5. После одобрения приедьте на склад в назначенное время.\n6. Подпишите договор аренды и проведите осмотр скутера.\n7. Стоимость аренды автоматически вычитается из ваших выплат.',
+      pl: '1. Upewnij się, że masz ważne prawo jazdy kat. A/AM lub B (dla skuterów do 50cc).\n2. W aplikacji: Menu → Skuter → Zgłoś chęć wynajmu.\n3. Prześlij zdjęcie prawa jazdy i dokumentu tożsamości.\n4. Poczekaj na zatwierdzenie (zazwyczaj 1–2 dni robocze).\n5. Po zatwierdzeniu przyjedź do magazynu o wyznaczonej godzinie.\n6. Podpisz umowę najmu i przeprowadź inspekcję skutera.\n7. Koszt wynajmu jest automatycznie odliczany od wypłat.',
+      ua: '1. Переконайтеся що у вас є діючі права категорії A/AM або B.\n2. У додатку: Меню → Скутер → Запросити оренду.\n3. Завантажте фото прав та документа що посвідчує особу.\n4. Дочекайтеся схвалення (зазвичай 1–2 робочі дні).\n5. Після схвалення приїдьте на склад у призначений час.\n6. Підпишіть договір оренди та проведіть огляд скутера.\n7. Вартість оренди автоматично вираховується з виплат.',
+      en: '1. Make sure you have a valid driving licence category A/AM or B (for scooters up to 50cc).\n2. In the app: Menu → Scooter → Request Rental.\n3. Upload a photo of your licence and ID.\n4. Wait for approval (usually 1–2 business days).\n5. After approval, come to the warehouse at the scheduled time.\n6. Sign the rental agreement and inspect the scooter.\n7. Rental cost is automatically deducted from your payments.'
+    }
+  },
+
+  {
+    id: 8,
+    active: true,
+    cat: { ru:'Аренда', pl:'Wynajem', ua:'Оренда', en:'Rental' },
+    q: {
+      ru: 'Сколько стоит аренда скутера?',
+      pl: 'Ile kosztuje wynajem skutera?',
+      ua: 'Скільки коштує оренда скутера?',
+      en: 'How much does scooter rental cost?'
+    },
+    a: {
+      ru: 'Стоимость аренды зависит от модели скутера и срока аренды.\nАктуальные тарифы доступны в приложении: Меню → Скутер → Тарифы аренды.\n\nОплата производится автоматически — вычитается из еженедельных выплат.',
+      pl: 'Koszt wynajmu zależy od modelu skutera i okresu wynajmu.\nAktualne taryfy dostępne są w aplikacji: Menu → Skuter → Taryfy wynajmu.\n\nPłatność jest automatyczna — odliczana z tygodniowych wypłat.',
+      ua: 'Вартість оренди залежить від моделі скутера та терміну оренди.\nАктуальні тарифи доступні у додатку: Меню → Скутер → Тарифи оренди.\n\nОплата здійснюється автоматично — вираховується з тижневих виплат.',
+      en: 'The rental cost depends on the scooter model and rental period.\nCurrent rates are available in the app: Menu → Scooter → Rental Rates.\n\nPayment is automatic — deducted from your weekly payments.'
+    }
+  }
+
+  // ══ ДОБАВЬТЕ НОВЫЕ ВОПРОСЫ ЗДЕСЬ ══
+  // Скопируйте блок выше и заполните поля
+];
+
+// ══════════════════════════════════════════════════════════════
+// CATEGORY ICONS & COLORS
+// ══════════════════════════════════════════════════════════════
+const CAT_CFG = {
+  'Авария':   { icon:'🚨', bg:'#fff1e5', color:'#bc4c00' },
+  'Wypadek':  { icon:'🚨', bg:'#fff1e5', color:'#bc4c00' },
+  'Аварія':   { icon:'🚨', bg:'#fff1e5', color:'#bc4c00' },
+  'Accident': { icon:'🚨', bg:'#fff1e5', color:'#bc4c00' },
+  'Поломка':  { icon:'🔧', bg:'#ffebe9', color:'#cf222e' },
+  'Awaria':   { icon:'🔧', bg:'#ffebe9', color:'#cf222e' },
+  'Breakdown':{ icon:'🔧', bg:'#ffebe9', color:'#cf222e' },
+  'Скутер':   { icon:'🛵', bg:'#ddf4ff', color:'#0969da' },
+  'Skuter':   { icon:'🛵', bg:'#ddf4ff', color:'#0969da' },
+  'Scooter':  { icon:'🛵', bg:'#ddf4ff', color:'#0969da' },
+  'Аренда':   { icon:'📋', bg:'#fbefff', color:'#6639ba' },
+  'Wynajem':  { icon:'📋', bg:'#fbefff', color:'#6639ba' },
+  'Оренда':   { icon:'📋', bg:'#fbefff', color:'#6639ba' },
+  'Rental':   { icon:'📋', bg:'#fbefff', color:'#6639ba' },
+};
+const cfg = n => CAT_CFG[n] || { icon:'📌', bg:'#dafbe1', color:'#1a7f37' };
+
+// ══════════════════════════════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════════════════════════════
+const T = {
+  ru:{ brandSub:'База знаний курьера', search:'Поиск...', all:'Все',
+       notFound:'Ничего не найдено', notFoundSub:'Попробуйте другой запрос или предложите тему',
+       suggestTitle:'Не нашли ответ?', suggestSub:'Предложите тему — мы добавим её в FAQ',
+       suggestBtn:'Предложить тему', modalTitle:'Предложить тему',
+       modalSub:'Опишите ситуацию — мы добавим инструкцию в FAQ',
+       lName:'Ваше имя', lLang:'Язык', lTopic:'Тема', lDetails:'Подробности (необязательно)',
+       phName:'Иван', phTopic:'Например: что делать если нет интернета во время смены',
+       phDetails:'Опишите подробнее...', cancel:'Отмена', submit:'Отправить',
+       successTitle:'Спасибо!', successSub:'Мы рассмотрим вашу тему и скоро добавим в FAQ.',
+       close:'Закрыть' },
+  pl:{ brandSub:'Baza wiedzy kuriera', search:'Szukaj...', all:'Wszystkie',
+       notFound:'Nic nie znaleziono', notFoundSub:'Spróbuj innego zapytania lub zaproponuj temat',
+       suggestTitle:'Nie znalazłeś odpowiedzi?', suggestSub:'Zaproponuj temat — dodamy go do FAQ',
+       suggestBtn:'Zaproponuj temat', modalTitle:'Zaproponuj temat',
+       modalSub:'Opisz sytuację — dodamy instrukcję do FAQ',
+       lName:'Twoje imię', lLang:'Język', lTopic:'Temat', lDetails:'Szczegóły (opcjonalnie)',
+       phName:'Jan', phTopic:'Np: co zrobić gdy nie ma internetu podczas zmiany',
+       phDetails:'Opisz dokładniej...', cancel:'Anuluj', submit:'Wyślij',
+       successTitle:'Dziękujemy!', successSub:'Rozpatrzymy Twój temat i wkrótce dodamy do FAQ.',
+       close:'Zamknij' },
+  ua:{ brandSub:'База знань кур\'єра', search:'Пошук...', all:'Всі',
+       notFound:'Нічого не знайдено', notFoundSub:'Спробуйте інший запит або запропонуйте тему',
+       suggestTitle:'Не знайшли відповідь?', suggestSub:'Запропонуйте тему — ми додамо її до FAQ',
+       suggestBtn:'Запропонувати тему', modalTitle:'Запропонувати тему',
+       modalSub:'Опишіть ситуацію — ми додамо інструкцію до FAQ',
+       lName:'Ваше ім\'я', lLang:'Мова', lTopic:'Тема', lDetails:'Деталі (необов\'язково)',
+       phName:'Іван', phTopic:'Наприклад: що робити якщо немає інтернету під час зміни',
+       phDetails:'Опишіть детальніше...', cancel:'Скасувати', submit:'Відправити',
+       successTitle:'Дякуємо!', successSub:'Ми розглянемо вашу тему і незабаром додамо до FAQ.',
+       close:'Закрити' },
+  en:{ brandSub:'Courier knowledge base', search:'Search...', all:'All',
+       notFound:'Nothing found', notFoundSub:'Try a different query or suggest a topic',
+       suggestTitle:'Didn\'t find an answer?', suggestSub:'Suggest a topic — we\'ll add it to the FAQ',
+       suggestBtn:'Suggest a topic', modalTitle:'Suggest a topic',
+       modalSub:'Describe the situation — we\'ll add instructions to the FAQ',
+       lName:'Your name', lLang:'Language', lTopic:'Topic', lDetails:'Details (optional)',
+       phName:'John', phTopic:'E.g. what to do if there\'s no internet during a shift',
+       phDetails:'Describe in more detail...', cancel:'Cancel', submit:'Submit',
+       successTitle:'Thank you!', successSub:'We\'ll review your topic and add it to the FAQ soon.',
+       close:'Close' }
+};
+
+// GOOGLE FORM — вставьте сюда ссылку на вашу Google Form
+// Как создать: forms.google.com → создайте форму с полями Имя, Язык, Тема, Подробности
+// Нажмите Отправить → Ссылка → скопируйте
+const GOOGLE_FORM_URL = ''; // например: 'https://forms.gle/xxxxxxxx'
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+let LANG = localStorage.getItem('faq_lang') || 'ru';
+let ACTIVE_CAT = 'all';
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+window.onload = () => {
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase() === LANG);
+  });
+  applyUI();
+  render();
+};
+
+function setLang(lang, btn) {
+  LANG = lang;
+  localStorage.setItem('faq_lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyUI();
+  render();
+}
+
+function applyUI() {
+  const t = T[LANG];
+  document.getElementById('brandSub').textContent    = t.brandSub;
+  document.getElementById('searchInput').placeholder  = t.search;
+  document.getElementById('suggestTitle').textContent = t.suggestTitle;
+  document.getElementById('suggestSub').textContent   = t.suggestSub;
+  document.getElementById('suggestBtn').textContent   = t.suggestBtn;
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════════════════
+function render() {
+  const t = T[LANG];
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  const active = FAQ_DATA.filter(f => f.active);
+
+  const filtered = active.filter(f => {
+    const cat = (f.cat[LANG] || '').toLowerCase();
+    const q   = (f.q[LANG]   || '').toLowerCase();
+    const a   = (f.a[LANG]   || '').toLowerCase();
+    const matchCat = ACTIVE_CAT === 'all' || cat === ACTIVE_CAT.toLowerCase();
+    const matchQ   = !query || q.includes(query) || a.includes(query);
+    return matchCat && matchQ;
+  });
+
+  // Tabs
+  const cats = [...new Set(active.map(f => f.cat[LANG]).filter(Boolean))];
+  document.getElementById('catTabs').innerHTML =
+    `<button class="cat-tab ${ACTIVE_CAT==='all'?'active':''}" onclick="setCat('all',this)">${t.all}</button>` +
+    cats.map(c => {
+      const cc = cfg(c);
+      return `<button class="cat-tab ${ACTIVE_CAT.toLowerCase()===c.toLowerCase()?'active':''}" onclick="setCat('${c}',this)">${cc.icon} ${c}</button>`;
+    }).join('');
+
+  // Content
+  const el = document.getElementById('faqContent');
+  if (!filtered.length) {
+    el.innerHTML = `<div class="empty"><span class="empty-icon">🔍</span><div class="empty-title">${t.notFound}</div><div>${t.notFoundSub}</div></div>`;
+    return;
+  }
+
+  const grouped = {};
+  filtered.forEach(f => {
+    const c = f.cat[LANG] || 'Other';
+    if (!grouped[c]) grouped[c] = [];
+    grouped[c].push(f);
+  });
+
+  el.innerHTML = Object.entries(grouped).map(([cat, items]) => {
+    const cc = cfg(cat);
+    return `<div class="faq-section">
+      <div class="section-header">
+        <div class="section-icon" style="background:${cc.bg};color:${cc.color}">${cc.icon}</div>
+        <div class="section-title">${cat}</div>
+        <div class="section-count">${items.length}</div>
+      </div>
+      ${items.map(f => {
+        const qText = hl(f.q[LANG] || '', query);
+        const aText = esc(f.a[LANG] || '');
+        return `<div class="faq-item" onclick="toggle(this)">
+          <div class="faq-q">
+            <div class="faq-q-text">${qText}</div>
+            <span class="faq-chevron">▼</span>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">${aText}</div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function hl(text, q) {
+  const e = esc(text);
+  if (!q) return e;
+  return e.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');
+}
+function esc(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function toggle(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+function setCat(cat, btn) {
+  ACTIVE_CAT = cat;
+  render();
+}
+function onSearch() {
+  ACTIVE_CAT = 'all';
+  const val = document.getElementById('searchInput').value;
+  document.getElementById('searchClear').style.display = val ? 'block' : 'none';
+  render();
+}
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').style.display = 'none';
+  render();
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODAL / SUGGEST
+// ══════════════════════════════════════════════════════════════
+function openModal() {
+  if (GOOGLE_FORM_URL) {
+    window.open(GOOGLE_FORM_URL, '_blank');
+    return;
+  }
+  const t = T[LANG];
+  document.getElementById('modalInner').innerHTML = `
+    <div class="modal-title">${t.modalTitle}</div>
+    <div class="modal-sub">${t.modalSub}</div>
+    <div class="form-row">
+      <div><label class="form-label">${t.lName}</label>
+        <input class="form-input" id="iName" type="text" placeholder="${t.phName}"></div>
+      <div><label class="form-label">${t.lLang}</label>
+        <select class="form-select" id="iLang">
+          <option value="ru" ${LANG==='ru'?'selected':''}>Русский</option>
+          <option value="pl" ${LANG==='pl'?'selected':''}>Polski</option>
+          <option value="ua" ${LANG==='ua'?'selected':''}>Українська</option>
+          <option value="en" ${LANG==='en'?'selected':''}>English</option>
+        </select></div>
+    </div>
+    <label class="form-label">${t.lTopic}</label>
+    <input class="form-input" id="iTopic" type="text" placeholder="${t.phTopic}">
+    <label class="form-label">${t.lDetails}</label>
+    <textarea class="form-textarea" id="iDetails" placeholder="${t.phDetails}"></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">${t.cancel}</button>
+      <button class="btn-submit" onclick="submitSuggest()">${t.submit}</button>
+    </div>`;
+  document.getElementById('modalOverlay').classList.remove('hidden');
+}
+
+function submitSuggest() {
+  const t = T[LANG];
+  const topic = (document.getElementById('iTopic').value || '').trim();
+  if (!topic) { document.getElementById('iTopic').style.borderColor='#cf222e'; return; }
+  // Если Google Form не подключена — просто показываем успех
+  document.getElementById('modalInner').innerHTML = `
+    <div class="success-msg">
+      <span class="success-icon">✅</span>
+      <div class="success-title">${t.successTitle}</div>
+      <div class="success-sub">${t.successSub}</div>
+      <button class="close-btn" onclick="closeModal()">${t.close}</button>
+    </div>`;
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+}
+function bgClose(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+</script>
+</body>
+</html>
